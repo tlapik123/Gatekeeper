@@ -12,12 +12,10 @@ public interface IGkReactionPermsDatabase {
     /// </summary>
     /// <param name="messageId">ID of the message reacted to</param>
     /// <param name="reaction">What reaction</param>
-    /// <param name="channelToApplyPerm">What channel to apply permissions on</param>
     /// <returns>
-    /// True: there is such channel for such message and reaction
-    /// False: there is no such channel
+    /// What channel to apply permissions on or null when no channel was found.
     /// </returns>
-    public Task<bool> TryGetChannel(ulong messageId, DiscordEmoji reaction, [MaybeNullWhen(false)] out DiscordChannel channelToApplyPerm);
+    public Task<DiscordChannel?> TryGetChannel(ulong messageId, DiscordEmoji reaction);
     
     /// <summary>
     /// Adds or updates entry in the database

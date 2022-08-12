@@ -8,11 +8,13 @@ public class GkReactionPermsDatabase : IGkReactionPermsDatabase {
     private readonly Dictionary<ulong, Dictionary<DiscordEmoji, DiscordChannel>>
         _database = new();
 
-    public Task<bool> TryGetChannel(ulong messageId, DiscordEmoji reaction,
-        [MaybeNullWhen(false)] out DiscordChannel channelToApplyPerm) {
-        channelToApplyPerm = null;
-        return Task.FromResult(_database.TryGetValue(messageId, out var secondDict)
-                               && secondDict.TryGetValue(reaction, out channelToApplyPerm));
+    public Task<DiscordChannel?> TryGetChannel(ulong messageId, DiscordEmoji reaction) {
+        if (_database.TryGetValue(messageId, out var secondDict)
+            && secondDict.TryGetValue(reaction, out var channelToApplyPerm)) {
+            return Task.FromResult<DiscordChannel?>(channelToApplyPerm);
+        }
+
+        return Task.FromResult<DiscordChannel?>(null);
     }
 
     public Task AddOrUpdateChannel(ulong messageId, Dictionary<DiscordEmoji, DiscordChannel> emojiToChannelDict) {

@@ -16,8 +16,7 @@ public sealed class GkReactionRoleHandler {
     /// </summary>
     public async Task MessageReactionAdded(DiscordClient _, MessageReactionAddEventArgs e) {
         if (e.User.IsBot) return;
-        if (await _reactionPermsDatabase.TryGetChannel(e.Message.Id, e.Emoji,
-                out var discordChannel) && e.User is DiscordMember member) {
+        if (await _reactionPermsDatabase.TryGetChannel(e.Message.Id, e.Emoji) is {} discordChannel && e.User is DiscordMember member) {
             await discordChannel.AddOverwriteAsync(member, Permissions.AccessChannels);
         }
     }
@@ -28,8 +27,7 @@ public sealed class GkReactionRoleHandler {
     /// </summary>
     public async Task MessageReactionRemoved(DiscordClient _, MessageReactionRemoveEventArgs e) {
         if (e.User.IsBot) return;
-        if (await _reactionPermsDatabase.TryGetChannel(e.Message.Id, e.Emoji,
-                out var discordChannel) && e.User is DiscordMember member) {
+        if (await _reactionPermsDatabase.TryGetChannel(e.Message.Id, e.Emoji) is {} discordChannel && e.User is DiscordMember member) {
             await discordChannel.AddOverwriteAsync(member, deny:Permissions.None);
         }
     }

@@ -11,6 +11,7 @@ using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using gatekeeper;
 using gatekeeper.GkConfigLoading;
+using gatekeeper.GkLogging;
 using gatekeeper.GkModules;
 using gatekeeper.GkPermsHandler;
 using gatekeeper.GkVerificationHandlers;

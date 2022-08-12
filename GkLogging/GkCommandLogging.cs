@@ -4,7 +4,7 @@
 using DSharpPlus.CommandsNext;
 using Microsoft.Extensions.Logging;
 
-namespace gatekeeper;
+namespace gatekeeper.GkLogging;
 
 /// <summary>
 /// Very simple logging extension for commands.

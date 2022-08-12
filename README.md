@@ -18,8 +18,9 @@ The other main thing - **reaction channel permissions** can be used to give indi
 
 ### Using the bot
 * download and build the project
-* To use the bot you will need to fill out the stub_configuration.ini
+* To use the bot you will need to fill out the `stub_configuration.ini`, then save it as `configuration.ini` or however you like but same as the start argument that you will pass to the executable
   * only 3 hashing function are supported so far - sha256, sha512 and md5 (all lowercase)
+  * you need to pass the configuration file name to the executable as an argument!
 * after that you can run the program and you are off!
 * you can use `~help` to get all aviable commands
   * `reaction_to_access_perms` is a interation loop

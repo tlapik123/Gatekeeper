@@ -15,6 +15,7 @@ using gatekeeper.GkLogging;
 using gatekeeper.GkModules;
 using gatekeeper.GkPermsHandler;
 using gatekeeper.GkVerificationHandlers;
+using gatekeeper.GkConvertors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -51,14 +52,14 @@ var services = new ServiceCollection()
         Credentials = new NetworkCredential(config.EmailUsername, config.EmailPassword),
     })
     .AddSingleton<IGkSisHandler, GkSisHandler>()
-    .AddSingleton<IGkMailHandler>(sp => new GkMailHandler(sp.GetRequiredService<SmtpClient>(),config.EmailUsername))
+    .AddSingleton<IGkMailHandler>(sp => new GkMailHandler(sp.GetRequiredService<SmtpClient>(), config.EmailUsername))
     .AddSingleton<IGkHashHandler>(_ => new GkHashHandler(config.HashAlg, config.Salt))
     .AddSingleton<IGkFileOfHashesHandler>(_ => new GkFileOfHashesHandler(config.SaveFile))
     // role module
     .AddSingleton<IArgumentConverter<DiscordMessage>, DiscordMessageConverter>()
     .AddSingleton<IArgumentConverter<DiscordEmoji>, DiscordEmojiConverter>()
     .AddSingleton<IArgumentConverter<DiscordChannel>, DiscordChannelConverter>()
-    .AddSingleton<IArgumentConverter<bool>, BoolConverter>()
+    .AddSingleton<IArgumentConverter<bool>, GkBoolConvertor>()
     .AddSingleton<IGkReactionPermsDatabase, GkReactionPermsDatabase>()
     .BuildServiceProvider();
 
@@ -70,9 +71,13 @@ var commands = discord.UseCommandsNext(
     }
 );
 
+// register custom parser
+commands.RegisterConverter(services.GetRequiredService<IArgumentConverter<bool>>());
+commands.RegisterConverter(ActivatorUtilities.GetServiceOrCreateInstance<GkEmojiChannelPairConvertor>(services));
+
 // register command modules
 commands.RegisterCommands<GkVerificationModule>();
-commands.RegisterCommands<GkRoleManagementModule>();
+commands.RegisterCommands<GkPermsModule>();
 
 var roleHandler = ActivatorUtilities.GetServiceOrCreateInstance<GkReactionRoleHandler>(services);
 

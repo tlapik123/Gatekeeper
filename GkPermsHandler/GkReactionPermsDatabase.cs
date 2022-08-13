@@ -5,7 +5,7 @@ namespace gatekeeper.GkPermsHandler;
 
 public class GkReactionPermsDatabase : IGkReactionPermsDatabase {
     // reaction message id -> {reaction -> channel}
-    private readonly Dictionary<ulong, Dictionary<DiscordEmoji, DiscordChannel>>
+    private readonly Dictionary<ulong, IReadOnlyDictionary<DiscordEmoji, DiscordChannel>>
         _database = new();
 
     public Task<DiscordChannel?> TryGetChannel(ulong messageId, DiscordEmoji reaction) {
@@ -17,7 +17,7 @@ public class GkReactionPermsDatabase : IGkReactionPermsDatabase {
         return Task.FromResult<DiscordChannel?>(null);
     }
 
-    public Task AddOrUpdateChannel(ulong messageId, Dictionary<DiscordEmoji, DiscordChannel> emojiToChannelDict) {
+    public Task AddOrUpdateChannel(ulong messageId, IReadOnlyDictionary<DiscordEmoji, DiscordChannel> emojiToChannelDict) {
         _database[messageId] = emojiToChannelDict;
         return Task.CompletedTask;
     }

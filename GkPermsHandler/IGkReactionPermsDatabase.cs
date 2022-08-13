@@ -22,5 +22,5 @@ public interface IGkReactionPermsDatabase {
     /// </summary>
     /// <param name="messageId">Id of the messages users will react to</param>
     /// <param name="emojiToChannelDict">emoji -> what channel permission to change binding</param>
-    public Task AddOrUpdateChannel(ulong messageId, Dictionary<DiscordEmoji, DiscordChannel> emojiToChannelDict);
+    public Task AddOrUpdateChannel(ulong messageId, IReadOnlyDictionary<DiscordEmoji, DiscordChannel> emojiToChannelDict);
 }

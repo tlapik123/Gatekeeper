@@ -23,7 +23,7 @@ The other main thing - **reaction channel permissions** can be used to give indi
   * you need to pass the configuration file name to the executable as an argument!
 * after that you can run the program and you are off!
 * you can use `~help` to get all aviable commands
-  * `reaction_to_access_perms` is a interation loop
+  * `react_to_perms` is a interation loop
   * `verify <ukco>` and `code <code>` go togther to verify user
 
 ## Programmer documentation
@@ -48,7 +48,7 @@ I will focus on a high-level overview rather than individual function. If you wa
 * harder part - setting the message and reaction
   * since there can be infinite reaction -> channel combination I settled on interation loop - bot with user
     * I might change this in the future - its quite cumbersome
-  * user initiates the command via `reaction_to_access_perms`
+  * user initiates the command via `react_to_perms`
     * then the interaction framework is used to make a "dialoge" between bot and user
     * user sets all the values
 

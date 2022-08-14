@@ -20,8 +20,13 @@ public class GkVerificationModule : BaseCommandModule {
     private readonly IGkFileOfHashesHandler _fileOfHashesHandler;
     private readonly Random _rnd;
 
-    public GkVerificationModule(IGkSisHandler sisHandler, IGkMailHandler mailHandler, IGkHashHandler hashHandler,
-        IGkFileOfHashesHandler fileOfHashesHandler, Random rnd) {
+    public GkVerificationModule(
+        IGkSisHandler sisHandler,
+        IGkMailHandler mailHandler,
+        IGkHashHandler hashHandler,
+        IGkFileOfHashesHandler fileOfHashesHandler,
+        Random rnd
+    ) {
         _sisHandler = sisHandler;
         _mailHandler = mailHandler;
         _hashHandler = hashHandler;
@@ -38,8 +43,8 @@ public class GkVerificationModule : BaseCommandModule {
         // check if the user is already verified or doing verification
         if (!ActiveVerifications.ContainsKey(userId) && !await _fileOfHashesHandler.ContainsHashAsync(hash)) {
             if (await _sisHandler.GetEmailOfMffAsync(ukco) is { } email) {
-                // create verification code
-                var code = _rnd.Next(999_999, 9_999_999);
+                // create 7 digit verification code
+                var code = _rnd.Next(1_000_000, 10_000_000);
                 await _mailHandler.SendVerificationCodeAsync(email, code);
 
                 ActiveVerifications[ctx.User.Id] = new(hash, code, StartNumOfTries);
@@ -72,7 +77,7 @@ public class GkVerificationModule : BaseCommandModule {
                     ActiveVerifications.Remove(userId);
                 }
 
-                await ctx.RespondAsync($"Bad code! Remaining tries{numOfTriesNew}.");
+                await ctx.RespondAsync($"Bad code! Remaining tries: {numOfTriesNew}.");
             }
         } else {
             // warn user there is no code registered for this ID

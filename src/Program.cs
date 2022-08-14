@@ -33,14 +33,14 @@ var discord = new DiscordClient(
         Token = config.Token,
         TokenType = TokenType.Bot,
         Intents = DiscordIntents.AllUnprivileged,
-        MinimumLogLevel = LogLevel.Debug
+        MinimumLogLevel = LogLevel.Debug,
     }
 );
 
 // use interactivity - used mainly for creating reaction perms
 discord.UseInteractivity(new InteractivityConfiguration {
     ResponseBehavior = InteractionResponseBehavior.Respond,
-    ResponseMessage = "Bad interaction",
+    ResponseMessage = "Bad interaction.",
 });
 
 

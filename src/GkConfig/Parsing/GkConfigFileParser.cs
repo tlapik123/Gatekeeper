@@ -24,10 +24,10 @@ public class GkConfigFileParser : IGkConfigParser {
     /// <param name="settingsFile">File to read the settings from.</param>
     public GkConfigFileParser(string settingsFile) => _settingsFile = settingsFile;
 
-    public async Task<GkConfig.Data.GkConfig> ParseConfigAsync() {
+    public async Task<Data.GkConfig> ParseConfigAsync() {
         if (await TryParseAsDict() is { } dict && AreAllSettingsThere(dict)) {
             // NOTE not the nicest, maybe do enum?
-            return new GkConfig.Data.GkConfig(
+            return new Data.GkConfig(
                 dict[_neededSettings[0]],
                 dict[_neededSettings[1]],
                 dict[_neededSettings[2]],
@@ -46,7 +46,7 @@ public class GkConfigFileParser : IGkConfigParser {
         "md5" => MD5.Create(),
         _ => throw new ArgumentOutOfRangeException()
     };
-
+    
     private bool AreAllSettingsThere(IReadOnlyDictionary<string, string> parsedDict) {
         return _neededSettings.All(parsedDict.ContainsKey);
     }

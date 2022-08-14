@@ -1,6 +1,4 @@
-﻿using gatekeeper.GkConfig.Data;
-
-namespace gatekeeper.GkConfig.Parsing; 
+﻿namespace gatekeeper.GkConfig.Parsing; 
 
 /// <summary>
 /// Represents generic config parser.
@@ -13,5 +11,5 @@ public interface IGkConfigParser {
     /// <returns>
     /// Returns <see cref="GkConfig"/>.
     /// </returns>
-    public Task<GkConfig.Data.GkConfig> ParseConfigAsync();
+    public Task<Data.GkConfig> ParseConfigAsync();
 }

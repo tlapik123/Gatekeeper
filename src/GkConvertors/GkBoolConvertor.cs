@@ -16,7 +16,7 @@ public class GkBoolConvertor : IArgumentConverter<bool> {
     /// <returns>
     /// Either empty optional if the string could not be found, otherwise optional with parsed bool value.
     /// </returns>
-    public Task<Optional<bool>> ConvertAsync(string value, CommandContext ctx) {
+    public Task<Optional<bool>> ConvertAsync(string value, CommandContext _) {
         if (bool.TryParse(value, out var boolean)) {
             return Task.FromResult(Optional.FromValue(boolean));
         }

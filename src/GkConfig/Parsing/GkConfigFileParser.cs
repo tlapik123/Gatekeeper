@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
-using gatekeeper.GkDataStructures;
 
-namespace gatekeeper.GkConfigLoading;
+namespace gatekeeper.GkConfig.Parsing;
 
 /// <summary>
 /// Loading settings from `=` delimited file.
@@ -25,10 +24,10 @@ public class GkConfigFileParser : IGkConfigParser {
     /// <param name="settingsFile">File to read the settings from.</param>
     public GkConfigFileParser(string settingsFile) => _settingsFile = settingsFile;
 
-    public async Task<GkConfig> ParseConfigAsync() {
+    public async Task<GkConfig.Data.GkConfig> ParseConfigAsync() {
         if (await TryParseAsDict() is { } dict && AreAllSettingsThere(dict)) {
             // NOTE not the nicest, maybe do enum?
-            return new GkConfig(
+            return new GkConfig.Data.GkConfig(
                 dict[_neededSettings[0]],
                 dict[_neededSettings[1]],
                 dict[_neededSettings[2]],

@@ -1,6 +1,6 @@
 ﻿using System.Net.Mail;
 
-namespace gatekeeper.GkVerificationHandlers; 
+namespace gatekeeper.GkVerification.Handlers; 
 
 public class GkMailHandler : IGkMailHandler {
     

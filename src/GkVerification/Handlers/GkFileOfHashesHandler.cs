@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace gatekeeper.GkVerificationHandlers;
+namespace gatekeeper.GkVerification.Handlers;
 
 public class GkFileOfHashesHandler : IGkFileOfHashesHandler {
     private readonly string _filePath;

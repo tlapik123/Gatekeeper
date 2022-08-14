@@ -9,13 +9,14 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
-using gatekeeper;
-using gatekeeper.GkConfigLoading;
+using gatekeeper.GkConfig.Parsing;
 using gatekeeper.GkLogging;
-using gatekeeper.GkModules;
-using gatekeeper.GkPermsHandler;
-using gatekeeper.GkVerificationHandlers;
 using gatekeeper.GkConvertors;
+using gatekeeper.GkReactionPerms.Database;
+using gatekeeper.GkReactionPerms.EventHandler;
+using gatekeeper.GkReactionPerms.Module;
+using gatekeeper.GkVerification.Handlers;
+using gatekeeper.GkVerification.Module;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -77,9 +78,9 @@ commands.RegisterConverter(ActivatorUtilities.GetServiceOrCreateInstance<GkEmoji
 
 // register command modules
 commands.RegisterCommands<GkVerificationModule>();
-commands.RegisterCommands<GkPermsModule>();
+commands.RegisterCommands<GkReactionPermsModule>();
 
-var roleHandler = ActivatorUtilities.GetServiceOrCreateInstance<GkReactionRoleHandler>(services);
+var roleHandler = ActivatorUtilities.GetServiceOrCreateInstance<GkReactionHandler>(services);
 
 // register reaction handling
 discord.MessageReactionAdded += roleHandler.MessageReactionAdded;

@@ -1,4 +1,4 @@
-﻿namespace gatekeeper.GkVerificationHandlers;
+﻿namespace gatekeeper.GkVerification.Handlers;
 
 /// <summary>
 /// Gets the email and sends the verification code to it. 

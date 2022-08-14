@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace gatekeeper.GkVerificationHandlers;
+namespace gatekeeper.GkVerification.Handlers;
 
 public class GkSisHandler : IGkSisHandler {
     private const string IncompleteSearchUri =
@@ -10,7 +10,7 @@ public class GkSisHandler : IGkSisHandler {
     private const string MailSearch = "href=\"mailto:";
     private const char EndSymbol = '>';
     
-    private const string ErrorPrompt = "Počet studentů, které nemáte právo vyhledat:";
+    // private const string ErrorPrompt = "Počet studentů, které nemáte právo vyhledat:";
     
     private readonly HttpClient _client;
 

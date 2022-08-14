@@ -1,4 +1,4 @@
-﻿namespace gatekeeper.GkVerificationHandlers;
+﻿namespace gatekeeper.GkVerification.Handlers;
 
 /// <summary>
 /// Handles reading and writing to the hash file

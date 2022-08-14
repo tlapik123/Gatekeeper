@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
+﻿using System.Text.Json;
 using DSharpPlus.Entities;
 
-namespace gatekeeper.GkPermsHandler;
+namespace gatekeeper.GkReactionPerms.Database;
 
 public class GkReactionPermsDatabase : IGkReactionPermsDatabase {
     // reaction message id -> {reaction -> channel}

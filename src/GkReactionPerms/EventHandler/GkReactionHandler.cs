@@ -1,13 +1,14 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using gatekeeper.GkReactionPerms.Database;
 
-namespace gatekeeper.GkPermsHandler;
+namespace gatekeeper.GkReactionPerms.EventHandler;
 
-public sealed class GkReactionRoleHandler {
+public sealed class GkReactionHandler {
     private readonly IGkReactionPermsDatabase _reactionPermsDatabase;
 
-    public GkReactionRoleHandler(IGkReactionPermsDatabase reactionPermsDatabase) =>
+    public GkReactionHandler(IGkReactionPermsDatabase reactionPermsDatabase) =>
         _reactionPermsDatabase = reactionPermsDatabase;
 
     /// <summary>

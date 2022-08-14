@@ -1,7 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
-namespace gatekeeper.GkPermsHandler;
+namespace gatekeeper.GkReactionPerms.Database;
 
 /// <summary>
 /// Generic permission database.

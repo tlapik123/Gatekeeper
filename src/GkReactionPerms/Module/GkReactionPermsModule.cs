@@ -1,22 +1,21 @@
-﻿using System.Globalization;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
-using gatekeeper.GkPermsHandler;
+using gatekeeper.GkReactionPerms.Database;
 
-namespace gatekeeper.GkModules;
+namespace gatekeeper.GkReactionPerms.Module;
 
 /// <summary>
 /// Houses commands regarding permission management.
 /// </summary>
-public class GkPermsModule : BaseCommandModule {
+public class GkReactionPermsModule : BaseCommandModule {
     private readonly IGkReactionPermsDatabase _reactionPermsDatabase;
     private readonly IDictionary<Type, IArgumentConverter> _convertors;
 
-    public GkPermsModule(
+    public GkReactionPermsModule(
         IArgumentConverter<DiscordMessage> messageConverter,
         IArgumentConverter<DiscordEmoji> emojiConverter,
         IArgumentConverter<DiscordChannel> channelConverter,

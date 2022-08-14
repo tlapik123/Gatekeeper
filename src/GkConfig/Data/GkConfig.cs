@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace gatekeeper.GkDataStructures;
+namespace gatekeeper.GkConfig.Data;
 
 /// <summary>
 /// Parsed configuration

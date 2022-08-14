@@ -1,8 +1,8 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using gatekeeper.GkVerificationHandlers;
+using gatekeeper.GkVerification.Handlers;
 
-namespace gatekeeper.GkModules;
+namespace gatekeeper.GkVerification.Module;
 
 public record struct VerificationData(string Hash, int Code, int NumOfTries);
 

@@ -6,7 +6,7 @@ The bot main feature - **verification** is inherently tied to SIS, so no versita
 The other main thing - **reaction channel permissions** can be used to give individual view permissions to selected channel when user reacts to selected message.
 
 ## Future plans
-* better interactive loop for reaction channel perms command
+* add resource file for all the strings
 * much better error handling
 * even more logging
 * slowly adding functionality that will be needed in the DC

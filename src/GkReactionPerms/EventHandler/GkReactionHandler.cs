@@ -1,6 +1,4 @@
 ﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using gatekeeper.GkReactionPerms.Database;
@@ -19,7 +17,13 @@ public sealed class GkReactionHandler {
     /// </summary>
     public async Task MessageReactionAdded(DiscordClient _, MessageReactionAddEventArgs e) {
         if (e.User.IsBot) return;
-        if (await _reactionPermsDatabase.TryGetChannelAsync(e.Message, e.Emoji, e.Guild) is {} discordChannel && e.User is DiscordMember member) {
+        if (await _reactionPermsDatabase.TryGetChannelAsync(e.Message, e.Emoji, e.Guild) is { } discordChannel &&
+            e.User is DiscordMember member) {
+            // try to update existing overwrite
+            if (await TryUpdateUserOverwriteAsync(discordChannel, member, ap => ap | Permissions.AccessChannels)) {
+                return;
+            }
+            // there wasn't any existing overwrite create new
             await discordChannel.AddOverwriteAsync(member, Permissions.AccessChannels);
         }
     }
@@ -30,10 +34,22 @@ public sealed class GkReactionHandler {
     /// </summary>
     public async Task MessageReactionRemoved(DiscordClient _, MessageReactionRemoveEventArgs e) {
         if (e.User.IsBot) return;
-        if (await _reactionPermsDatabase.TryGetChannelAsync(e.Message, e.Emoji, e.Guild) is {} discordChannel && e.User is DiscordMember member) {
-            // add empty member - this overwrites any permission in the channel
-            // TODO only disallow access, leave rest of the perms intact
-            await discordChannel.AddOverwriteAsync(member);
+        if (await _reactionPermsDatabase.TryGetChannelAsync(e.Message, e.Emoji, e.Guild) is { } discordChannel &&
+            e.User is DiscordMember member) {
+            await TryUpdateUserOverwriteAsync(discordChannel, member, ap => ap ^ Permissions.AccessChannels);
+            // there wasn't any existing already - dont change anything
         }
+    }
+
+    private async Task<bool> TryUpdateUserOverwriteAsync(DiscordChannel channel, DiscordMember member,
+        Func<Permissions, Permissions> changeAllowedPermsFunc) {
+        foreach (var overwrite in channel.PermissionOverwrites) {
+            if (member.Equals(await overwrite.GetMemberAsync())) {
+                await overwrite.UpdateAsync(changeAllowedPermsFunc(overwrite.Allowed));
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -61,6 +61,7 @@ var services = new ServiceCollection()
     .AddSingleton<IArgumentConverter<DiscordEmoji>, DiscordEmojiConverter>()
     .AddSingleton<IArgumentConverter<DiscordChannel>, DiscordChannelConverter>()
     .AddSingleton<IArgumentConverter<bool>, GkBoolConvertor>()
+    .AddSingleton<IGkReactionPermsDatabaseInner, GkReactionPermsDatabaseInner>()
     .AddSingleton<IGkReactionPermsDatabase, GkReactionPermsDatabase>()
     .BuildServiceProvider();
 

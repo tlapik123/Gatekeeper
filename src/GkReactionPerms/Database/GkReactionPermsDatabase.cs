@@ -1,30 +1,51 @@
-﻿using System.Text.Json;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
 namespace gatekeeper.GkReactionPerms.Database;
 
-public class GkReactionPermsDatabase : IGkReactionPermsDatabase {
-    // reaction message id -> {reaction -> channel}
-    private readonly Dictionary<ulong, IReadOnlyDictionary<DiscordEmoji, DiscordChannel>>
-        _database = new();
+using EmojiChannelPairs = Dictionary<(ulong, string), ulong>;
 
-    public Task<DiscordChannel?> TryGetChannel(ulong messageId, DiscordEmoji reaction) {
-        if (_database.TryGetValue(messageId, out var secondDict)
-            && secondDict.TryGetValue(reaction, out var channelToApplyPerm)) {
-            return Task.FromResult<DiscordChannel?>(channelToApplyPerm);
+public class GkReactionPermsDatabase : IGkReactionPermsDatabase {
+    private readonly IGkReactionPermsDatabaseInner _database;
+
+    public GkReactionPermsDatabase(IGkReactionPermsDatabaseInner database) => _database = database;
+
+    public async Task<DiscordChannel?> TryGetChannelAsync(
+        DiscordMessage message,
+        DiscordEmoji reaction,
+        DiscordGuild guild
+    ) {
+        if (await _database.TryGetChannelAsync(message.Id, (reaction.Id, reaction.Name)) is { } channelId) {
+            // this can also return null, for example if the channel was deleted after binding was created
+            return guild.GetChannel(channelId);
         }
 
-        return Task.FromResult<DiscordChannel?>(null);
+        return null;
     }
 
-    public Task AddOrUpdateChannel(ulong messageId, IReadOnlyDictionary<DiscordEmoji, DiscordChannel> emojiToChannelDict) {
-        _database[messageId] = emojiToChannelDict;
-        Serialize();
-        return Task.CompletedTask;
+    public Task AddOrUpdateMessageAsync(
+        DiscordMessage message,
+        IEnumerable<(DiscordEmoji, DiscordChannel)> emojiChannelPairs
+    ) {
+        return _database.AddOrUpdateMessageAsync(message.Id, ConvertToIdDict(emojiChannelPairs));
     }
 
-    private void Serialize() {
-        string jsonString = JsonSerializer.Serialize(_database);
-        Console.WriteLine(jsonString);
+    public Task AddOrUpdateSinglePair(DiscordMessage message, DiscordEmoji emoji, DiscordChannel channel) {
+        return _database.AddOrUpdateSinglePairAsync(message.Id, (emoji.Id, emoji.Name), channel.Id);
+    }
+
+    /// <summary>
+    /// Converts discord Emoji - Channel pairs to format that the database can recognize.
+    /// </summary>
+    /// <param name="emojiChannelPairs">Emoji Channel pairs to convert.</param>
+    /// <returns></returns>
+    private EmojiChannelPairs ConvertToIdDict(
+        IEnumerable<(DiscordEmoji, DiscordChannel)> emojiChannelPairs
+    ) {
+        EmojiChannelPairs retDict = new();
+        foreach (var (emoji, channel) in emojiChannelPairs) {
+            retDict[(emoji.Id, emoji.Name)] = channel.Id;
+        }
+
+        return retDict;
     }
 }

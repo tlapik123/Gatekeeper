@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using System.Collections.Immutable;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.Entities;
@@ -41,16 +42,15 @@ public class GkReactionPermsModule : BaseCommandModule {
         await ctx.RespondAsync(@"Stating creation process!
 What message will users be reacting to? (Enter valid message ID)"
         );
-
-        Dictionary<DiscordEmoji, DiscordChannel> changeDict = new();
-
+        
         // TODO: let the user end in any moment?
         if (await TryGetResponseAsync<DiscordMessage>(interactivity, ctx) is not { } mRes) {
             await TimedOutRespondAsync(ctx.Message);
             return;
         }
-
         var (messageChain, message) = mRes;
+        
+        List<(DiscordEmoji, DiscordChannel)> changePairs = new();
         // Get the emoji-channel pairs
         while (true) {
             await messageChain.RespondAsync("What emoji will they use? (Enter an emoji)");
@@ -69,7 +69,7 @@ What message will users be reacting to? (Enter valid message ID)"
 
             (messageChain, var tmpChannel) = cRes;
 
-            changeDict[tmpEmoji] = tmpChannel;
+            changePairs.Add((tmpEmoji, tmpChannel));
 
             await messageChain.RespondAsync("Specify more emoji -> channel pairs?");
             if (await TryGetResponseAsync<bool>(interactivity, ctx) is not { } bRes) {
@@ -84,10 +84,10 @@ What message will users be reacting to? (Enter valid message ID)"
             }
         }
         // add binding to database
-        await _reactionPermsDatabase.AddOrUpdateChannel(message.Id, changeDict);
+        await _reactionPermsDatabase.AddOrUpdateMessageAsync(message, changePairs);
 
         // indicate user with reaction to the message from bot and with message
-        foreach (var emoji in changeDict.Keys) {
+        foreach (var (emoji, _) in changePairs) {
             await message.CreateReactionAsync(emoji);
         }
 
@@ -101,13 +101,14 @@ What message will users be reacting to? (Enter valid message ID)"
     public async Task SetReactionToPermissionsCommand(
         CommandContext ctx,
         DiscordMessage bindingMessage,
-        [RemainingText] Dictionary<DiscordEmoji, DiscordChannel> bindings
+        [RemainingText] IList<(DiscordEmoji, DiscordChannel)> bindings
     ) {
+        // TODO is IList the best choice for argument here?
         await ctx.RespondAsync("Setting up given bindings!");
-
-        await _reactionPermsDatabase.AddOrUpdateChannel(bindingMessage.Id, bindings);
+        
+        await _reactionPermsDatabase.AddOrUpdateMessageAsync(bindingMessage, bindings);
         // indicate user with reaction to the message from bot and with message
-        foreach (var emoji in bindings.Keys) {
+        foreach (var (emoji, _) in bindings) {
             await bindingMessage.CreateReactionAsync(emoji);
         }
 

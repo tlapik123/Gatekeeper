@@ -4,7 +4,8 @@ using DSharpPlus.Entities;
 
 namespace gatekeeper.GkConvertors;
 
-using EmojiChannelPairs = Dictionary<DiscordEmoji, DiscordChannel>;
+// Pairs of emoji and channel.
+using EmojiChannelPairs = IList<(DiscordEmoji, DiscordChannel)>;
 
 public class GkEmojiChannelPairConvertor : IArgumentConverter<EmojiChannelPairs> {
     private readonly IArgumentConverter<DiscordEmoji> _emojiConvertor;
@@ -15,7 +16,7 @@ public class GkEmojiChannelPairConvertor : IArgumentConverter<EmojiChannelPairs>
         (_emojiConvertor, _channelConvertor) = (emojiConvertor, channelConvertor);
     
     /// <summary>
-    /// Converts string to the Dictionary of emoji to channel pairs.
+    /// Converts string to the <see cref="EmojiChannelPairs"/>.
     /// The string format has to be:
     ///     emoji:channel, emoji:channel, ...
     /// separated by any number of spaces.
@@ -27,7 +28,7 @@ public class GkEmojiChannelPairConvertor : IArgumentConverter<EmojiChannelPairs>
     /// NON-empty optional - thing was converted successfully.
     /// </returns>
     public async Task<Optional<EmojiChannelPairs>> ConvertAsync(string value, CommandContext ctx) {
-        var retPairs = new Dictionary<DiscordEmoji, DiscordChannel>();
+        var retPairs = new List<(DiscordEmoji, DiscordChannel)>();
         var keyValues = value.Split(',', StringSplitOptions.RemoveEmptyEntries);
         foreach (var keyValue in keyValues) {
             var pair = keyValue.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -42,7 +43,7 @@ public class GkEmojiChannelPairConvertor : IArgumentConverter<EmojiChannelPairs>
                 return Optional.FromNoValue<EmojiChannelPairs>();
             }
 
-            retPairs[emojiOpt.Value] = channelOpt.Value;
+            retPairs.Add((emojiOpt.Value, channelOpt.Value));
         }
 
         return retPairs;

@@ -8,6 +8,9 @@ namespace gatekeeper.GkConfig.Parsing;
 public class GkConfigFileParser : IGkConfigParser {
     private readonly string _settingsFile;
 
+    /// <summary>
+    /// Settings that need to be set in the config file.
+    /// </summary>
     private readonly List<string> _neededSettings = new() {
         "token",
         "email_server",
@@ -40,17 +43,40 @@ public class GkConfigFileParser : IGkConfigParser {
         throw new ArgumentException("Setting file doesn't have all the required arguments! Or there is a syntax error near some `=`!");
     }
 
-    private HashAlgorithm TryParseHashAlg(string gottenAlg) => gottenAlg switch {
+    /// <summary>
+    /// Parse and create the hashing algorithm from given string.
+    /// </summary>
+    /// <param name="gottenAlg">String to parse the algorithm from.</param>
+    /// <returns>
+    /// <see cref="HashAlgorithm"/> Parsed HashAlgorithm.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Incorrect or no algorithm was specified.</exception>
+    /// TODO it would maybe be better to create the algorithm wia dependency injection?
+    private static HashAlgorithm TryParseHashAlg(string gottenAlg) => gottenAlg switch {
         "sha256" => SHA256.Create(),
         "sha512" => SHA512.Create(),
         "md5" => MD5.Create(),
-        _ => throw new ArgumentOutOfRangeException()
+        _ => throw new ArgumentOutOfRangeException(nameof(gottenAlg),"Incorrect or no algorithm was specified!"),
     };
     
+    /// <summary>
+    /// Check if all the required setting from the config file were present.
+    /// </summary>
+    /// <param name="parsedDict">Dictionary of option->value pairs.</param>
+    /// <returns>
+    /// True: all settings were present.
+    /// False: there was at least one missing option.
+    /// </returns>
     private bool AreAllSettingsThere(IReadOnlyDictionary<string, string> parsedDict) {
         return _neededSettings.All(parsedDict.ContainsKey);
     }
 
+    /// <summary>
+    /// Preprocess the config file as a dictionary
+    /// </summary>
+    /// <returns>
+    /// Dictionary of `what_option` -> `set_value` or null, if no options were encountered.
+    /// </returns>
     private async Task<Dictionary<string, string>?> TryParseAsDict() {
         Dictionary<string, string> retDict = new();
         using var sr = new StreamReader(_settingsFile);
